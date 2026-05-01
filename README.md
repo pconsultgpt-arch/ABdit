@@ -36,13 +36,24 @@ seven-step Abdit workflow with rich seeded data.
 
 ### Run it
 
+**macOS / Linux**
+
 ```bash
 ./run.sh
 ```
 
-This creates a virtualenv, installs deps, seeds a fresh SQLite database with
-demo data, and starts the server on `http://localhost:8000`. All demo accounts
-share the password `password`.
+**Windows** (cmd or PowerShell)
+
+```bat
+run.bat
+```
+
+Either script creates a virtualenv, installs deps, seeds a fresh SQLite
+database with demo data, and starts the server on `http://localhost:8000`.
+All demo accounts share the password `password`.
+
+Requires Python 3.11+ on `PATH` (the Windows script tries `py -3` first, then
+`python`).
 
 | Email | Role | What you'll see |
 | --- | --- | --- |
