@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Inspection #{{ insp.id }}{% endblock %}
+{% block sidebar %}{% set active='inspections' %}{% include "subscriber/_sidebar.html" with context %}{% endblock %}
+{% block content %}
+<a href="/subscriber/inspections" class="small">← All inspections</a>
+<h3 class="mt-2">Inspection #{{ insp.id }} <span class="badge bg-secondary">{{ insp.status.replace('_',' ') }}</span></h3>
+<p class="text-muted small">Requested {{ insp.requested_at.strftime('%Y-%m-%d %H:%M') }}{% if insp.scheduled_for %} · Scheduled {{ insp.scheduled_for.strftime('%Y-%m-%d') }}{% endif %}</p>
+
+<div class="row">
+  <div class="col-md-7">
+    <div class="card mb-3">
+      <div class="card-header">Workflow status</div>
+      <div class="card-body">
+        {% set st = insp.status %}
+        {% set steps = [
+          ('Requested',        ['requested','assigned','report_submitted','proposal_sent','accepted','installed','completed']),
+          ('Specialist assigned',['assigned','report_submitted','proposal_sent','accepted','installed','completed']),
+          ('Report submitted', ['report_submitted','proposal_sent','accepted','installed','completed']),
+          ('Proposal sent',    ['proposal_sent','accepted','installed','completed']),
+          ('Accepted',         ['accepted','installed','completed']),
+          ('Installed',        ['installed','completed']),
+          ('Verified savings', ['completed']),
+        ] %}
+        {% for label, active_states in steps %}
+          <div class="workflow-step {% if st in active_states %}done{% endif %}">
+            <div class="num">{{ loop.index }}</div>
+            <div>{{ label }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if insp.report %}
+    <div class="card mb-3">
+      <div class="card-header">Specialist report</div>
+      <div class="card-body">
+        <p><strong>Plumbing:</strong> {{ insp.report.plumbing_findings }}</p>
+        <p><strong>Irrigation:</strong> {{ insp.report.irrigation_findings }}</p>
+        <p><strong>Leakage:</strong> {{ insp.report.leakage_findings }}</p>
+        <p><strong>Usage:</strong> {{ insp.report.usage_observations }}</p>
+        <p><strong>Summary:</strong> {{ insp.report.summary }}</p>
+        <p class="mb-0"><strong>Estimated savings:</strong> {{ '%.1f'|format(insp.report.estimated_savings_pct) }}%</p>
+        {% if savings %}
+          <div class="alert alert-info mt-3 small mb-0">
+            Projected yearly savings: <strong>{{ '%.1f'|format(savings.yearly_m3) }} m³</strong>
+            ≈ <strong>{{ '%.2f'|format(savings.yearly_amount) }}</strong> off your bills.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if insp.proposal %}
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between">
+        <span>Pre-invoice (proposal)</span>
+        <span class="badge bg-{% if insp.proposal.status=='accepted' %}success{% elif insp.proposal.status=='declined' %}danger{% else %}primary{% endif %}">{{ insp.proposal.status }}</span>
+      </div>
+      <div class="card-body">
+        <p class="small text-muted">{{ insp.proposal.notes }}</p>
+        <form method="post" action="/subscriber/proposals/{{ insp.proposal.id }}/respond">
+          <table class="table table-sm">
+            <thead><tr><th></th><th>Item</th><th>Provider</th><th class="text-end">Unit</th><th class="text-end">Install</th><th class="text-end">Subtotal</th></tr></thead>
+            <tbody>
+            {% for it in insp.proposal.items %}
+              <tr>
+                <td><input class="form-check-input" type="checkbox" name="selected_items" value="{{ it.id }}" {% if it.selected %}checked{% endif %} {% if insp.proposal.status != 'sent' %}disabled{% endif %}></td>
+                <td>{{ it.product.name }}<div class="small text-muted">expected {{ '%.0f'|format(it.product.expected_savings_pct) }}% savings</div></td>
+                <td class="small">{{ it.product.provider.company_name }}</td>
+                <td class="text-end">{{ '%.2f'|format(it.unit_price) }}</td>
+                <td class="text-end">{{ '%.2f'|format(it.install_fee) }}</td>
+                <td class="text-end">{{ '%.2f'|format((it.unit_price + it.install_fee) * it.quantity) }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot><tr><th colspan="5" class="text-end">Estimated total</th><th class="text-end">{{ '%.2f'|format(proposal_total) }}</th></tr></tfoot>
+          </table>
+          {% if insp.proposal.status == 'sent' %}
+          <div class="d-flex gap-2">
+            <button class="btn btn-success" name="decision" value="accept">Accept proposal</button>
+            <button class="btn btn-outline-secondary" name="decision" value="decline">Decline</button>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if insp.proposal and insp.proposal.installation %}
+    <div class="card mb-3">
+      <div class="card-header">Installation</div>
+      <div class="card-body">
+        <p><strong>Status:</strong> {{ insp.proposal.installation.status }}</p>
+        {% if insp.proposal.installation.installed_at %}<p><strong>Installed:</strong> {{ insp.proposal.installation.installed_at.strftime('%Y-%m-%d') }}</p>{% endif %}
+        {% if insp.proposal.installation.actual_savings_pct is not none %}
+        <p><strong>Verified savings:</strong> {{ '%.1f'|format(insp.proposal.installation.actual_savings_pct) }}%</p>
+        <p class="small text-muted">{{ insp.proposal.installation.feedback }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-md-5">
+    <div class="card mb-3">
+      <div class="card-header">Notes</div>
+      <div class="card-body small">{{ insp.notes or 'No notes.' }}</div>
+    </div>
+    {% if insp.specialist %}
+    <div class="card mb-3">
+      <div class="card-header">Assigned specialist</div>
+      <div class="card-body">
+        <div class="fw-semibold">{{ insp.specialist.user.full_name }}</div>
+        <div class="small text-muted">{{ insp.specialist.certification_level }} · ⭐ {{ insp.specialist.rating }} · {{ insp.specialist.completed_jobs }} jobs</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Marketplace{% endblock %}
+{% block sidebar %}{% set active='marketplace' %}{% include "subscriber/_sidebar.html" with context %}{% endblock %}
+{% block content %}
+<h3>Equipment marketplace</h3>
+<p class="text-muted">Water-saving devices certified through Abdit. Specialists choose from this catalog when preparing your proposal.</p>
+<div class="row g-3">
+  {% for p in products %}
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <span class="badge bg-light text-dark mb-2">{{ p.category.replace('_',' ') }}</span>
+        <h5>{{ p.name }}</h5>
+        <p class="small text-muted">{{ p.description }}</p>
+        <div class="d-flex justify-content-between small">
+          <div><strong>{{ '%.2f'|format(p.price) }}</strong> + {{ '%.0f'|format(p.install_fee) }} install</div>
+          <div class="text-success">~{{ '%.0f'|format(p.expected_savings_pct) }}% savings</div>
+        </div>
+        <div class="text-muted small mt-2">By {{ p.provider.company_name }}</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

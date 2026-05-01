@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Training{% endblock %}
+{% block sidebar %}{% set active='training' %}{% include "admin/_sidebar.html" with context %}{% endblock %}
+{% block content %}
+<h3>Training programs & specialists</h3>
+
+<div class="row g-3">
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-header">Partner programs</div>
+      <ul class="list-group list-group-flush">
+        {% for p in programs %}
+        <li class="list-group-item">
+          <div class="fw-semibold">{{ p.name }}</div>
+          <div class="small text-muted">{{ p.institution }} · {{ p.duration_weeks }} weeks · {{ p.certified_count }} certified</div>
+          <div class="small">{{ p.description }}</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header">Active specialists</div>
+      <ul class="list-group list-group-flush">
+        {% for s in specialists %}
+        <li class="list-group-item small">
+          <strong>{{ s.user.full_name }}</strong> · {{ s.certification_level }} · ⭐ {{ s.rating }} · {{ s.completed_jobs }} jobs
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

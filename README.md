@@ -2,7 +2,102 @@
 
 This repository contains the `AbDit.pptx` presentation, which shows a schematic
 view of a system designed to convince people to use and install devices that
-help reduce water consumption and cost.
+help reduce water consumption and cost — and a working **prototype web
+application** that implements the Abdit platform end-to-end.
+
+## Prototype
+
+A FastAPI + SQLite + Jinja2 server-rendered application that walks the full
+seven-step Abdit workflow with rich seeded data.
+
+### What's implemented
+
+- **Five role-specific portals**: subscriber, specialist, water company,
+  equipment provider, Abdit operator (admin).
+- **Consumption analytics engine**: per-subscriber z-score against historical
+  baseline + peer comparison against similar households (household size,
+  garden), classifying anomalies as low / medium / high severity.
+- **Notifications**: anomalies generate alerts in the subscriber's inbox with
+  a one-click "Request inspection" action.
+- **Inspection workflow** (the seven steps from the proposal): request →
+  specialist claim → on-site report → pre-invoice (proposal) with marketplace
+  items → subscriber accept/decline → installation → verified savings feedback
+  into the knowledge base.
+- **Equipment marketplace**: providers manage product catalogs (CRUD); products
+  appear in specialist proposals and the subscriber-facing marketplace.
+- **Knowledge base & training programs**: curated water-saving practices,
+  case-study counts, and partner certification programs.
+- **Water-company tooling**: aggregate consumption charts, subscriber roster,
+  upload-reading form (simulating utility-system import), one-click
+  re-run-analytics.
+- **Operator dashboard**: cross-platform KPIs, inspection-pipeline counts,
+  verified savings rolling up from completed installations.
+- **Auth**: session-based login with role-based access control.
+
+### Run it
+
+```bash
+./run.sh
+```
+
+This creates a virtualenv, installs deps, seeds a fresh SQLite database with
+demo data, and starts the server on `http://localhost:8000`. All demo accounts
+share the password `password`.
+
+| Email | Role | What you'll see |
+| --- | --- | --- |
+| `amal@example.com` | Subscriber | Open proposal awaiting acceptance |
+| `nadia@example.com` | Subscriber | Verified installation with 23.5% savings |
+| `samir@example.com` | Subscriber | New high-consumption notification |
+| `specialist1@abdit.io` | Specialist | Active inspection in progress |
+| `ops@bluecity-water.com` | Water company | 8 subscribers, 18 months history |
+| `aquasmart@abdit.io` | Provider | 2 active products, marketplace stats |
+| `admin@abdit.io` | Abdit operator | Cross-platform dashboard |
+
+### Demo walkthrough
+
+1. **Subscriber `samir@example.com`** → dashboard shows a high-severity alert.
+   Click "Request inspection".
+2. **Specialist `specialist1@abdit.io`** → claim the unassigned request, fill
+   in the report form (plumbing/irrigation/leakage findings, estimated
+   savings), then build a proposal by ticking products from the marketplace
+   and clicking "Send proposal".
+3. **Back to `samir@example.com`** → open the inspection, review the report
+   with projected yearly savings, accept the proposal.
+4. **Specialist** → mark the installation complete with verified savings %.
+5. **`admin@abdit.io`** → operator dashboard now shows the new completed
+   installation rolled into the average-verified-savings KPI.
+
+### Project layout
+
+```
+app/
+├── main.py            # FastAPI app + auth + login flow
+├── database.py        # SQLAlchemy engine/session
+├── models.py          # ORM models for every entity in the proposal
+├── auth.py            # Password hashing + role-based dependencies
+├── analytics.py       # Anomaly detection + savings estimator
+├── seed.py            # Idempotent demo-data seeder
+├── routers/
+│   ├── subscriber.py
+│   ├── specialist.py
+│   ├── water_company.py
+│   ├── provider.py
+│   └── admin.py
+├── templates/         # Jinja2 templates per role
+└── static/style.css
+```
+
+### Limitations (this is a prototype)
+
+- Single-process SQLite, single demo water company, no real metering integration.
+- Anomaly detection is statistical (z-score + peer ratio); no ML model is
+  trained.
+- No email/SMS — notifications are in-app only.
+- No payment processing for proposals/installations.
+- Session secret and demo passwords are hard-coded for ease of local demo.
+
+---
 
 ## Proposal: Abdit System for Intelligent Water Conservation
 
