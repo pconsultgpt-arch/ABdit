@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Provider{% endblock %}
+{% block sidebar %}{% set active='dashboard' %}{% include "provider/_sidebar.html" with context %}{% endblock %}
+{% block content %}
+<h3>{{ me.company_name }}</h3>
+<p class="text-muted small">{{ me.description }}</p>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-3"><div class="kpi-card"><div class="label">Active products</div>
+    <div class="value">{{ stats|selectattr('product.active')|list|length }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">In proposals</div>
+    <div class="value">{{ stats|sum(attribute='in_proposals') }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">Accepted</div>
+    <div class="value">{{ stats|sum(attribute='accepted') }}</div></div></div>
+</div>
+
+<div class="card">
+  <div class="card-header d-flex justify-content-between">
+    <span>My products</span>
+    <a class="btn btn-sm btn-primary" href="/provider/products/new">+ New product</a>
+  </div>
+  <table class="table table-sm mb-0">
+    <thead><tr><th>Name</th><th>Category</th><th class="text-end">Price</th><th class="text-end">Install</th><th class="text-end">Savings</th><th class="text-center">In proposals</th><th class="text-center">Accepted</th><th></th></tr></thead>
+    <tbody>
+      {% for s in stats %}
+      <tr>
+        <td>{{ s.product.name }}{% if not s.product.active %} <span class="badge bg-secondary">inactive</span>{% endif %}</td>
+        <td class="small">{{ s.product.category.replace('_',' ') }}</td>
+        <td class="text-end">{{ '%.2f'|format(s.product.price) }}</td>
+        <td class="text-end">{{ '%.2f'|format(s.product.install_fee) }}</td>
+        <td class="text-end">{{ '%.0f'|format(s.product.expected_savings_pct) }}%</td>
+        <td class="text-center">{{ s.in_proposals }}</td>
+        <td class="text-center">{{ s.accepted }}</td>
+        <td><a class="btn btn-sm btn-outline-secondary" href="/provider/products/{{ s.product.id }}">Edit</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

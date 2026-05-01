@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Inspection #{{ insp.id }}{% endblock %}
+{% block sidebar %}{% include "specialist/_sidebar.html" with context %}{% endblock %}
+{% block content %}
+<a href="/specialist" class="small">← Back</a>
+<h3 class="mt-2">Inspection #{{ insp.id }} <span class="badge bg-secondary">{{ insp.status.replace('_',' ') }}</span></h3>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">Subscriber</div>
+      <div class="card-body small">
+        <div class="fw-semibold">{{ insp.subscriber.user.full_name }}</div>
+        <div>{{ insp.subscriber.address }}, {{ insp.subscriber.city }}</div>
+        <div class="text-muted">Household size {{ insp.subscriber.household_size }}{% if insp.subscriber.has_garden %} · garden{% endif %}{% if insp.subscriber.has_pool %} · pool{% endif %}</div>
+        <div class="text-muted">Account {{ insp.subscriber.account_number }}</div>
+        <hr>
+        <div><strong>Reason:</strong> {{ insp.notes or '—' }}</div>
+        {% if insp.anomaly_id %}
+          <hr>
+          <div class="small">Triggered by anomaly #{{ insp.anomaly_id }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card mb-3">
+      <div class="card-header">{{ 'Update report' if insp.report else 'Submit inspection report' }}</div>
+      <div class="card-body">
+        <form method="post" action="/specialist/inspections/{{ insp.id }}/report">
+          <div class="row g-2">
+            <div class="col-md-6"><label class="form-label small">Plumbing findings</label>
+              <textarea name="plumbing" class="form-control form-control-sm" rows="2">{{ insp.report.plumbing_findings if insp.report else '' }}</textarea></div>
+            <div class="col-md-6"><label class="form-label small">Irrigation findings</label>
+              <textarea name="irrigation" class="form-control form-control-sm" rows="2">{{ insp.report.irrigation_findings if insp.report else '' }}</textarea></div>
+            <div class="col-md-6"><label class="form-label small">Leakage findings</label>
+              <textarea name="leakage" class="form-control form-control-sm" rows="2">{{ insp.report.leakage_findings if insp.report else '' }}</textarea></div>
+            <div class="col-md-6"><label class="form-label small">Usage observations</label>
+              <textarea name="usage" class="form-control form-control-sm" rows="2">{{ insp.report.usage_observations if insp.report else '' }}</textarea></div>
+            <div class="col-md-3"><label class="form-label small">Estimated savings %</label>
+              <input name="estimated_savings_pct" type="number" step="0.1" class="form-control form-control-sm"
+                     value="{{ insp.report.estimated_savings_pct if insp.report else 15.0 }}"></div>
+            <div class="col-md-9"><label class="form-label small">Summary</label>
+              <input name="summary" class="form-control form-control-sm" value="{{ insp.report.summary if insp.report else '' }}"></div>
+          </div>
+          <button class="btn btn-primary mt-2 btn-sm">Save report</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card mb-3">
+      <div class="card-header">{{ 'Update proposal' if insp.proposal else 'Build pre-invoice (proposal)' }}</div>
+      <div class="card-body">
+        <form method="post" action="/specialist/inspections/{{ insp.id }}/proposal">
+          <label class="form-label small">Notes for subscriber</label>
+          <textarea name="notes" class="form-control form-control-sm mb-2" rows="2">{{ insp.proposal.notes if insp.proposal else '' }}</textarea>
+          <table class="table table-sm">
+            <thead><tr><th></th><th>Product</th><th>Provider</th><th class="text-end">Price</th><th class="text-end">Install</th><th class="text-end">Savings</th></tr></thead>
+            <tbody>
+              {% set selected_ids = insp.proposal.items|map(attribute='product_id')|list if insp.proposal else [] %}
+              {% for p in products %}
+              <tr>
+                <td><input class="form-check-input" type="checkbox" name="product_ids" value="{{ p.id }}"
+                  {% if p.id in selected_ids %}checked{% endif %}></td>
+                <td>{{ p.name }}</td>
+                <td class="small">{{ p.provider.company_name }}</td>
+                <td class="text-end">{{ '%.2f'|format(p.price) }}</td>
+                <td class="text-end">{{ '%.2f'|format(p.install_fee) }}</td>
+                <td class="text-end">{{ '%.0f'|format(p.expected_savings_pct) }}%</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <button class="btn btn-primary btn-sm">Send proposal</button>
+        </form>
+      </div>
+    </div>
+
+    {% if insp.proposal and insp.proposal.status == 'accepted' %}
+    <div class="card mb-3">
+      <div class="card-header">Mark installation complete</div>
+      <div class="card-body">
+        <form method="post" action="/specialist/inspections/{{ insp.id }}/install">
+          <div class="row g-2">
+            <div class="col-md-3"><label class="form-label small">Verified savings %</label>
+              <input name="actual_savings_pct" type="number" step="0.1" class="form-control form-control-sm" value="20.0"></div>
+            <div class="col-md-9"><label class="form-label small">Feedback</label>
+              <input name="feedback" class="form-control form-control-sm" value="Installation complete and verified."></div>
+          </div>
+          <button class="btn btn-success mt-2 btn-sm">Complete installation</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if insp.proposal and insp.proposal.installation %}
+    <div class="alert alert-success small">Installation status: <strong>{{ insp.proposal.installation.status }}</strong>{% if insp.proposal.installation.actual_savings_pct is not none %} · verified {{ '%.1f'|format(insp.proposal.installation.actual_savings_pct) }}% savings{% endif %}.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

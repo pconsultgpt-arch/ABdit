@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block public %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow-sm mt-4">
+      <div class="card-body">
+        <h4 class="card-title">Sign in</h4>
+        {% if error %}<div class="alert alert-danger small">{{ error }}</div>{% endif %}
+        <form method="post" action="/login">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control" name="email" type="email" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input class="form-control" name="password" type="password" required value="password">
+          </div>
+          <button class="btn btn-primary w-100" type="submit">Sign in</button>
+        </form>
+        <hr>
+        <p class="text-muted small mb-0">Try any of the demo accounts shown on the home page. All passwords are <code>password</code>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

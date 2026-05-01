@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Subscribers{% endblock %}
+{% block sidebar %}{% set active='subscribers' %}{% include "water_company/_sidebar.html" with context %}{% endblock %}
+{% block content %}
+<h3>Subscribers</h3>
+<table class="table table-sm bg-white">
+  <thead><tr><th>Account</th><th>Name</th><th>Address</th><th>Household</th><th class="text-end">Last bill m³</th><th class="text-end">Last amount</th><th>Anomaly</th></tr></thead>
+  <tbody>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r.sub.account_number }}</td>
+      <td>{{ r.sub.user.full_name }}</td>
+      <td>{{ r.sub.address }}</td>
+      <td class="small">{{ r.sub.household_size }}{% if r.sub.has_garden %} · garden{% endif %}{% if r.sub.has_pool %} · pool{% endif %}</td>
+      <td class="text-end">{% if r.last %}{{ '%.1f'|format(r.last.cubic_meters) }}{% endif %}</td>
+      <td class="text-end">{% if r.last %}{{ '%.2f'|format(r.last.amount) }}{% endif %}</td>
+      <td>{% if r.anomaly %}<span class="badge severity-{{ r.anomaly.severity }}">{{ r.anomaly.severity }}</span>{% else %}<span class="text-muted small">—</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
