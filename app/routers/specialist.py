@@ -1,14 +1,13 @@
 from datetime import datetime
-from pathlib import Path
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..auth import require_role
 from ..database import get_db
+from ..templating import templates
 from ..models import (
     InspectionReport,
     InspectionRequest,
@@ -23,8 +22,6 @@ from ..models import (
 )
 
 router = APIRouter(prefix="/specialist", tags=["specialist"])
-templates = Jinja2Templates(directory=Path(__file__).resolve().parent.parent / "templates")
-templates.env.globals["now"] = datetime.utcnow
 
 
 def _ctx(request, user, **kw):

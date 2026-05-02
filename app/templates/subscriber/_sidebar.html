@@ -1,11 +1,11 @@
 <div class="sidebar">
-  <h6>Subscriber</h6>
-  <a href="/subscriber" class="{% if active=='dashboard' %}active{% endif %}">Dashboard</a>
-  <a href="/subscriber/consumption" class="{% if active=='consumption' %}active{% endif %}">Consumption</a>
+  <h6>مشترک</h6>
+  <a href="/subscriber" class="{% if active=='dashboard' %}active{% endif %}">داشبورد</a>
+  <a href="/subscriber/consumption" class="{% if active=='consumption' %}active{% endif %}">مصرف</a>
   <a href="/subscriber/notifications" class="{% if active=='notifications' %}active{% endif %}">
-    Notifications
+    اعلان‌ها
     {% if unread_count and unread_count > 0 %}<span class="badge bg-danger ms-1">{{ unread_count }}</span>{% endif %}
   </a>
-  <a href="/subscriber/inspections" class="{% if active=='inspections' %}active{% endif %}">Inspections</a>
-  <a href="/subscriber/marketplace" class="{% if active=='marketplace' %}active{% endif %}">Marketplace</a>
+  <a href="/subscriber/inspections" class="{% if active=='inspections' %}active{% endif %}">بازرسی‌ها</a>
+  <a href="/subscriber/marketplace" class="{% if active=='marketplace' %}active{% endif %}">بازارگاه</a>
 </div>

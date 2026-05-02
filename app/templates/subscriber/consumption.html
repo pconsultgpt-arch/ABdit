@@ -1,37 +1,37 @@
 {% extends "base.html" %}
-{% block title %}Consumption{% endblock %}
+{% block title %}مصرف{% endblock %}
 {% block sidebar %}{% set active='consumption' %}{% include "subscriber/_sidebar.html" with context %}{% endblock %}
 {% block content %}
-<h3>Consumption history</h3>
-<p class="text-muted">All meter readings & bills for account {{ sub.account_number }}.</p>
+<h3>تاریخچهٔ مصرف</h3>
+<p class="text-muted">همهٔ قرائت‌های کنتور و صورت‌حساب‌های مرتبط با حساب {{ sub.account_number }}.</p>
 
 <div class="card mb-3">
-  <div class="card-header">Last 12 months</div>
+  <div class="card-header">۱۲ ماه گذشته</div>
   <div class="card-body">
     <div class="bar-chart">
       {% for r in chart %}
         {% set h = (r.cubic_meters / max_m3) * 100 %}
-        <div class="bar" style="height: {{ h }}%" data-label="{{ r.period_start.strftime('%b %Y') }}: {{ '%.1f'|format(r.cubic_meters) }} m³"></div>
+        <div class="bar" style="height: {{ h }}%" data-label="{{ r.period_start.strftime('%Y-%m') }}: {{ '%.1f'|format(r.cubic_meters) }} m³"></div>
       {% endfor %}
     </div>
     <div class="bar-chart-labels mt-1">
-      {% for r in chart %}<span>{{ r.period_start.strftime('%b') }}</span>{% endfor %}
+      {% for r in chart %}<span>{{ r.period_start.strftime('%m') }}</span>{% endfor %}
     </div>
-    <div class="mt-3 small text-muted">Long-term average: {{ '%.1f'|format(avg) }} m³ per month</div>
+    <div class="mt-3 small text-muted">میانگین بلندمدت: {{ '%.1f'|format(avg) }} مترمکعب در ماه</div>
   </div>
 </div>
 
 <div class="card">
-  <div class="card-header">Bills</div>
+  <div class="card-header">صورت‌حساب‌ها</div>
   <table class="table table-sm mb-0">
-    <thead><tr><th>Period</th><th>m³</th><th>Amount</th><th>Status</th></tr></thead>
+    <thead><tr><th>دوره</th><th>مترمکعب</th><th>مبلغ</th><th>وضعیت</th></tr></thead>
     <tbody>
       {% for b in bills|reverse %}
       <tr>
         <td>{{ b.period_start.strftime('%Y-%m') }}</td>
         <td>{{ '%.1f'|format(b.cubic_meters) }}</td>
         <td>{{ '%.2f'|format(b.amount) }}</td>
-        <td>{% if b.paid %}<span class="badge bg-success">Paid</span>{% else %}<span class="badge bg-warning text-dark">Open</span>{% endif %}</td>
+        <td>{% if b.paid %}<span class="badge bg-success">پرداخت‌شده</span>{% else %}<span class="badge bg-warning text-dark">پرداخت‌نشده</span>{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>

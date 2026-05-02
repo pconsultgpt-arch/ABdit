@@ -7,6 +7,7 @@
 
 body {
   background-color: var(--abdit-bg);
+  font-family: "Vazirmatn", "Tahoma", system-ui, sans-serif;
 }
 
 .abdit-nav {
@@ -31,13 +32,13 @@ body {
   padding: 1rem 1.2rem;
   border: 1px solid #e1e8ee;
 }
-.kpi-card .label { color: #6c7a89; font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+.kpi-card .label { color: #6c7a89; font-size: .8rem; letter-spacing: .03em; }
 .kpi-card .value { font-size: 1.6rem; font-weight: 600; color: var(--abdit-primary-dark); }
 
 .card { border-color: #e1e8ee; }
 .card-header { background: white; font-weight: 600; }
 
-.bar-chart { display: flex; align-items: flex-end; gap: .25rem; height: 140px; padding: 0; }
+.bar-chart { display: flex; align-items: flex-end; gap: .25rem; height: 140px; padding: 0; direction: ltr; }
 .bar-chart .bar {
   flex: 1;
   background: linear-gradient(180deg, var(--abdit-accent), var(--abdit-primary));
@@ -52,7 +53,7 @@ body {
   background: #1f2d3d; color: white; font-size: .7rem; padding: 2px 6px;
   border-radius: 3px; white-space: nowrap; margin-bottom: 4px;
 }
-.bar-chart-labels { display: flex; gap: .25rem; font-size: .65rem; color: #6c7a89; }
+.bar-chart-labels { display: flex; gap: .25rem; font-size: .65rem; color: #6c7a89; direction: ltr; }
 .bar-chart-labels span { flex: 1; text-align: center; }
 
 .severity-high { background: #d9534f !important; color: white !important; }
@@ -69,3 +70,6 @@ body {
 }
 .workflow-step.done .num { background: #5cb85c; }
 .workflow-step.active { border-color: var(--abdit-primary); background: #eaf4f9; }
+
+/* Numbers stay LTR within RTL flow */
+.num-ltr { direction: ltr; unicode-bidi: embed; display: inline-block; }

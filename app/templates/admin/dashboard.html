@@ -1,34 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Operator overview{% endblock %}
+{% block title %}نمای کلی اپراتور{% endblock %}
 {% block sidebar %}{% set active='dashboard' %}{% include "admin/_sidebar.html" with context %}{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h3 class="mb-0">Platform overview</h3>
+  <h3 class="mb-0">نمای کلی سامانه</h3>
   <form method="post" action="/admin/run-analytics">
-    <button class="btn btn-sm btn-primary">Re-run consumption analytics</button>
+    <button class="btn btn-sm btn-primary">اجرای دوبارهٔ تحلیل مصرف</button>
   </form>
 </div>
 
 <div class="row g-3 mb-3">
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Subscribers</div><div class="value">{{ counts.subscribers }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Specialists</div><div class="value">{{ counts.specialists }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Providers</div><div class="value">{{ counts.providers }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Water companies</div><div class="value">{{ counts.water_companies }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Products</div><div class="value">{{ counts.products }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Open anomalies</div><div class="value">{{ counts.anomalies }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Inspections</div><div class="value">{{ counts.inspections }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Avg. verified savings</div><div class="value">{{ '%.1f'|format(avg_savings) }}%</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">مشترکان</div><div class="value">{{ counts.subscribers }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">متخصصان</div><div class="value">{{ counts.specialists }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">تأمین‌کنندگان</div><div class="value">{{ counts.providers }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">شرکت‌های آب</div><div class="value">{{ counts.water_companies }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">محصولات</div><div class="value">{{ counts.products }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">ناهنجاری‌های باز</div><div class="value">{{ counts.anomalies }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">بازرسی‌ها</div><div class="value">{{ counts.inspections }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">میانگین صرفه‌جویی تأییدشده</div><div class="value">{{ '%.1f'|format(avg_savings) }}٪</div></div></div>
 </div>
 
 <div class="row g-3">
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">Inspection pipeline</div>
+      <div class="card-header">روند بازرسی‌ها</div>
       <table class="table table-sm mb-0">
-        <thead><tr><th>Status</th><th class="text-end">Count</th></tr></thead>
+        <thead><tr><th>وضعیت</th><th class="text-end">تعداد</th></tr></thead>
         <tbody>
           {% for k, v in pipeline.items() %}
-          <tr><td>{{ k.replace('_',' ') }}</td><td class="text-end">{{ v }}</td></tr>
+          <tr><td>{{ t_status[k] }}</td><td class="text-end">{{ v }}</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -36,17 +36,17 @@
   </div>
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">Verified installations (KB feedback)</div>
+      <div class="card-header">نصب‌های تأییدشده (بازخورد به پایگاه دانش)</div>
       <ul class="list-group list-group-flush">
         {% for i in installations %}
           {% if i.actual_savings_pct is not none %}
           <li class="list-group-item small">
-            Installation #{{ i.id }}: <strong>{{ '%.1f'|format(i.actual_savings_pct) }}%</strong> verified savings.
+            نصب #{{ i.id }}: <strong>{{ '%.1f'|format(i.actual_savings_pct) }}٪</strong> صرفه‌جویی تأییدشده.
             <div class="text-muted">{{ i.feedback }}</div>
           </li>
           {% endif %}
         {% else %}
-          <li class="list-group-item text-muted small">No verified installations yet.</li>
+          <li class="list-group-item text-muted small">هنوز نصب تأییدشده‌ای ثبت نشده است.</li>
         {% endfor %}
       </ul>
     </div>

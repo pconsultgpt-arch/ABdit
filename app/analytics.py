@@ -88,9 +88,9 @@ def analyze_subscriber(db: Session, subscriber: Subscriber) -> AnalysisResult | 
         return None
 
     description = (
-        f"Latest consumption {latest:.1f} m³ is {z:+.1f}σ above this household's "
-        f"baseline ({mean:.1f} m³) and {peer_ratio:.2f}× the peer average "
-        f"({peer_avg:.1f} m³) for similar households."
+        f"مصرف اخیر {latest:.1f} مترمکعب است؛ {z:+.1f}σ بالاتر از میانگین این "
+        f"خانوار ({mean:.1f} مترمکعب) و {peer_ratio:.2f} برابر میانگین خانوارهای "
+        f"مشابه ({peer_avg:.1f} مترمکعب)."
     )
 
     return AnalysisResult(
@@ -122,14 +122,15 @@ def run_full_analysis(db: Session) -> list[AnalysisResult]:
         db.add(anomaly)
         db.flush()
 
+        severity_fa = {"low": "کم", "medium": "متوسط", "high": "زیاد"}[result.severity]
         notification = Notification(
             subscriber_id=sub.id,
             anomaly_id=anomaly.id,
-            title=f"High water consumption detected ({result.severity})",
+            title=f"مصرف بالای آب شناسایی شد (شدت: {severity_fa})",
             body=(
                 result.description
-                + " You may benefit from a free water efficiency assessment by a "
-                "certified Abdit specialist. Participation is voluntary."
+                + " می‌توانید از یک ارزیابی رایگان بهینه‌مصرف آب توسط متخصص دارای "
+                "گواهی آبدیت بهره‌مند شوید. مشارکت اختیاری است."
             ),
         )
         db.add(notification)

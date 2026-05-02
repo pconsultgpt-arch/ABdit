@@ -83,23 +83,23 @@ def seed():
     db = SessionLocal()
     try:
         # ---- Admin / Abdit operators ----
-        admin_user = _make_user(db, "admin@abdit.io", "Abdit Operator", Role.ADMIN)
+        admin_user = _make_user(db, "admin@abdit.io", "اپراتور آبدیت", Role.ADMIN)
 
         # ---- Water company ----
-        wc_user = _make_user(db, "ops@bluecity-water.com", "Blue City Water Ops", Role.WATER_COMPANY)
-        wc = WaterCompany(user_id=wc_user.id, name="Blue City Water", region="Blue City")
+        wc_user = _make_user(db, "ops@bluecity-water.com", "اپراتور شرکت آب شهر آبی", Role.WATER_COMPANY)
+        wc = WaterCompany(user_id=wc_user.id, name="آب شهر آبی", region="شهر آبی")
         db.add(wc)
         db.flush()
 
         # ---- Specialists ----
         specialists = []
-        for i, name in enumerate(["Sara Nadir", "Omar Hayek", "Lina Ferraro"]):
+        for i, name in enumerate(["مریم رضایی", "آرش محمدی", "نگار حسینی"]):
             email = f"specialist{i+1}@abdit.io"
             su = _make_user(db, email, name, Role.SPECIALIST)
             sp = Specialist(
                 user_id=su.id,
-                certification_level="Senior" if i == 0 else "Certified",
-                region="Blue City",
+                certification_level="ارشد" if i == 0 else "دارای گواهی",
+                region="شهر آبی",
                 rating=4.6 + 0.1 * i,
                 completed_jobs=random.randint(8, 40),
             )
@@ -109,9 +109,9 @@ def seed():
 
         # ---- Providers ----
         providers_data = [
-            ("AquaSmart Devices", "aquasmart@abdit.io", "Smart irrigation and metering."),
-            ("EcoFit Plumbing", "ecofit@abdit.io", "Efficient faucets, showerheads, leak sensors."),
-            ("HydroLoop Systems", "hydroloop@abdit.io", "Greywater recycling for homes and small estates."),
+            ("آکواسمارت", "aquasmart@abdit.io", "تجهیزات آبیاری هوشمند و کنتورهای پیشرفته."),
+            ("اکوفیت", "ecofit@abdit.io", "شیرآلات، دوش‌ها و حسگرهای نشت‌یاب کم‌مصرف."),
+            ("هیدرولوپ", "hydroloop@abdit.io", "سامانه‌های بازچرخانی آب خاکستری برای منازل و مجموعه‌های کوچک."),
         ]
         providers: list[Provider] = []
         for company, email, desc in providers_data:
@@ -123,18 +123,18 @@ def seed():
 
         # ---- Products ----
         catalog = [
-            (providers[0], "AquaSmart IR-200 Irrigation Controller", ProductCategory.SMART_IRRIGATION,
-             "Weather-aware controller, schedules irrigation by ET₀ and soil moisture.", 220.0, 60.0, 18.0),
-            (providers[0], "AquaSmart M-Flow Smart Meter", ProductCategory.SMART_METER,
-             "Realtime LoRaWAN meter with leak alerts.", 180.0, 80.0, 6.0),
-            (providers[1], "EcoFit Aerator Bundle (5 taps)", ProductCategory.EFFICIENT_FAUCET,
-             "Drop-in aerators reducing flow to 4 L/min without pressure loss.", 35.0, 15.0, 8.0),
-            (providers[1], "EcoFit Rainshower Pro", ProductCategory.EFFICIENT_SHOWERHEAD,
-             "6 L/min showerhead with thermo-sensitive trigger.", 55.0, 20.0, 10.0),
-            (providers[1], "EcoFit Leak Sentinel", ProductCategory.LEAK_DETECTION,
-             "Whole-home acoustic leak detector with auto-shutoff.", 290.0, 120.0, 12.0),
-            (providers[2], "HydroLoop GW-1 Greywater Recycler", ProductCategory.WATER_RECYCLING,
-             "Recycles shower & sink water for toilet flushing and garden use.", 1450.0, 300.0, 28.0),
+            (providers[0], "کنترلر آبیاری هوشمند آکواسمارت IR-200", ProductCategory.SMART_IRRIGATION,
+             "کنترلر هوشمند آبیاری مبتنی بر تبخیر و رطوبت خاک.", 220.0, 60.0, 18.0),
+            (providers[0], "کنتور هوشمند آکواسمارت M-Flow", ProductCategory.SMART_METER,
+             "کنتور آب لحظه‌ای با ارتباط LoRaWAN و هشدار نشت.", 180.0, 80.0, 6.0),
+            (providers[1], "بستهٔ هوادهندهٔ شیرآلات اکوفیت (۵ شیر)", ProductCategory.EFFICIENT_FAUCET,
+             "هوادهنده‌های شیر برای کاهش مصرف به ۴ لیتر در دقیقه بدون افت فشار.", 35.0, 15.0, 8.0),
+            (providers[1], "دوش کم‌مصرف اکوفیت Rainshower Pro", ProductCategory.EFFICIENT_SHOWERHEAD,
+             "دوش ۶ لیتر در دقیقه با شیر خاموش‌کن حرارتی.", 55.0, 20.0, 10.0),
+            (providers[1], "نشت‌یاب صوتی اکوفیت Leak Sentinel", ProductCategory.LEAK_DETECTION,
+             "نشت‌یاب صوتی برای کل منزل با قابلیت قطع خودکار جریان.", 290.0, 120.0, 12.0),
+            (providers[2], "بازچرخانگر آب خاکستری هیدرولوپ GW-1", ProductCategory.WATER_RECYCLING,
+             "بازچرخانی آب دوش و سینک برای استفاده در فلاش و باغچه.", 1450.0, 300.0, 28.0),
         ]
         products: list[Product] = []
         for prov, name, cat, desc, price, install, savings in catalog:
@@ -154,14 +154,14 @@ def seed():
         # ---- Subscribers ----
         subscriber_specs = [
             # email, name, address, city, household, garden, pool, anomalous_factor (multiplier on latest month)
-            ("amal@example.com", "Amal Khoury", "12 Olive Lane", "Blue City", 4, True, False, 1.85),
-            ("rashid@example.com", "Rashid Saleh", "44 Cedar Way", "Blue City", 3, False, False, 1.05),
-            ("nadia@example.com", "Nadia Costa", "9 Harbor Rd", "Blue City", 5, True, True, 1.55),
-            ("yusuf@example.com", "Yusuf Bahar", "3 Marina Pl", "Blue City", 2, False, False, 0.95),
-            ("layla@example.com", "Layla Demir", "27 Pine St", "Blue City", 6, True, False, 1.40),
-            ("kareem@example.com", "Kareem Dabbagh", "5 Sunset Blvd", "Blue City", 1, False, False, 1.10),
-            ("noor@example.com", "Noor El-Amin", "8 Garden Court", "Blue City", 4, True, False, 1.00),
-            ("samir@example.com", "Samir Haddad", "19 Hilltop", "Blue City", 3, False, False, 1.65),
+            ("amal@example.com", "امیر کریمی", "خیابان زیتون، پلاک ۱۲", "شهر آبی", 4, True, False, 1.85),
+            ("rashid@example.com", "رشید صالحی", "خیابان سرو، پلاک ۴۴", "شهر آبی", 3, False, False, 1.05),
+            ("nadia@example.com", "ندا خوشدل", "خیابان بندر، پلاک ۹", "شهر آبی", 5, True, True, 1.55),
+            ("yusuf@example.com", "یوسف بحری", "میدان مارینا، پلاک ۳", "شهر آبی", 2, False, False, 0.95),
+            ("layla@example.com", "لیلا کاظمی", "خیابان کاج، پلاک ۲۷", "شهر آبی", 6, True, False, 1.40),
+            ("kareem@example.com", "کریم دباغ", "بلوار غروب، پلاک ۵", "شهر آبی", 1, False, False, 1.10),
+            ("noor@example.com", "نور احمدی", "کوچهٔ باغ، پلاک ۸", "شهر آبی", 4, True, False, 1.00),
+            ("samir@example.com", "سمیر حداد", "خیابان تپه، پلاک ۱۹", "شهر آبی", 3, False, False, 1.65),
         ]
 
         subscribers: list[Subscriber] = []
@@ -233,24 +233,24 @@ def seed():
             status=InspectionStatus.REPORT_SUBMITTED.value,
             requested_at=datetime.utcnow() - timedelta(days=6),
             scheduled_for=datetime.utcnow() - timedelta(days=2),
-            notes="Subscriber reports unusually high bill last month; suspects garden irrigation overrun.",
+            notes="مشترک گزارش می‌دهد که صورت‌حساب ماه گذشته به‌طور غیرعادی بالا بوده؛ احتمال اضافه‌مصرف سامانهٔ آبیاری باغچه را مطرح کرده است.",
         )
         db.add(insp)
         db.flush()
 
         report = InspectionReport(
             inspection_id=insp.id,
-            plumbing_findings="Two faucets dripping in kitchen and guest bath; toilet flapper sticking.",
-            irrigation_findings="Drip system zone 3 stuck open at night — running ~4h longer than scheduled.",
-            leakage_findings="Acoustic check confirmed continuous flow on irrigation line.",
-            usage_observations="Household practices reasonable, but no awareness of irrigation overrun.",
+            plumbing_findings="دو شیر چکه‌دار در آشپزخانه و سرویس مهمان؛ گیرکردن فلپ توالت.",
+            irrigation_findings="منطقهٔ ۳ سامانهٔ قطره‌ای شب‌ها در حالت باز گیر کرده — حدود ۴ ساعت بیش از برنامه روشن می‌ماند.",
+            leakage_findings="بررسی صوتی، جریان پیوسته روی خط آبیاری را تأیید کرد.",
+            usage_observations="عادات مصرف خانوار منطقی است، ولی از اضافه‌مصرف سامانهٔ آبیاری اطلاع نداشتند.",
             estimated_savings_pct=22.0,
-            summary="Most savings from fixing irrigation controller + leak guard. Aerators give incremental wins.",
+            summary="بیشترین صرفه‌جویی از اصلاح کنترلر آبیاری و نصب نشت‌یاب حاصل می‌شود؛ هوادهنده‌ها صرفه‌جویی تکمیلی می‌دهند.",
         )
         db.add(report)
 
         proposal = Proposal(inspection_id=insp.id, status="sent",
-                            notes="Mix of immediate quick wins and a smart controller upgrade.")
+                            notes="ترکیبی از راهکارهای سریع و ارتقای کنترلر هوشمند آبیاری.")
         db.add(proposal)
         db.flush()
 
@@ -278,22 +278,22 @@ def seed():
             status=InspectionStatus.INSTALLED.value,
             requested_at=datetime.utcnow() - timedelta(days=45),
             scheduled_for=datetime.utcnow() - timedelta(days=40),
-            notes="Pool top-up + garden irrigation high.",
+            notes="آبگیری استخر و آبیاری باغچه بیش از حد انتظار است.",
         )
         db.add(insp2)
         db.flush()
         db.add(InspectionReport(
             inspection_id=insp2.id,
-            plumbing_findings="No visible leaks indoors.",
-            irrigation_findings="Sprinkler zone overlap; controller not weather-aware.",
-            leakage_findings="Pool top-up valve cycling more than expected.",
-            usage_observations="Family of 5; pool used heavily in summer.",
+            plumbing_findings="نشت آشکاری در داخل ساختمان مشاهده نشد.",
+            irrigation_findings="هم‌پوشانی مناطق آبپاش‌ها؛ کنترلر فاقد قابلیت تشخیص شرایط جوی.",
+            leakage_findings="شیر آبگیری استخر بیش از حد معمول وارد چرخهٔ شارژ می‌شود.",
+            usage_observations="خانوادهٔ ۵ نفره؛ استخر در تابستان استفادهٔ زیاد دارد.",
             estimated_savings_pct=20.0,
-            summary="Smart irrigation controller + leak sentinel recommended.",
+            summary="نصب کنترلر هوشمند آبیاری و نشت‌یاب توصیه می‌شود.",
         ))
         prop2 = Proposal(inspection_id=insp2.id, status="accepted",
                          accepted_at=datetime.utcnow() - timedelta(days=35),
-                         notes="Accepted full bundle.")
+                         notes="کل بسته پذیرفته شد.")
         db.add(prop2)
         db.flush()
         for prod in [products[0], products[4]]:
@@ -310,45 +310,46 @@ def seed():
             installed_at=datetime.utcnow() - timedelta(days=30),
             status="verified",
             actual_savings_pct=23.5,
-            feedback="Subscriber happy. Bills already showing reduction in last cycle.",
+            feedback="مشترک رضایت دارد. کاهش مصرف در صورت‌حساب دورهٔ اخیر مشاهده شده است.",
         ))
         db.commit()
 
         # ---- Knowledge base ----
         kb_entries = [
             KnowledgeBaseEntry(
-                title="Weather-aware irrigation controllers",
-                category="irrigation",
-                content="Replacing time-based controllers with ET-based weather-aware controllers "
-                        "typically reduces outdoor consumption by 15-25%, especially in arid climates.",
-                region="Blue City",
+                title="کنترلرهای آبیاری مبتنی بر شرایط جوی",
+                category="آبیاری",
+                content="جایگزینی کنترلرهای زمان‌بنیاد با کنترلرهای مبتنی بر تبخیر و شرایط جوی، "
+                        "مصرف فضای سبز را به‌طور معمول ۱۵ تا ۲۵ درصد کاهش می‌دهد، به‌ویژه در اقلیم‌های خشک.",
+                region="شهر آبی",
                 expected_savings_pct=18.0,
                 cases_count=12,
             ),
             KnowledgeBaseEntry(
-                title="Faucet aerators in residential settings",
-                category="indoor",
-                content="Low-flow aerators (4-6 L/min) cut faucet water use by 30-50% with no perceived "
-                        "loss of pressure. Best ROI of any intervention; payback < 6 months.",
+                title="هوادهنده‌های شیرآلات در منازل",
+                category="مصرف داخلی",
+                content="هوادهنده‌های کم‌مصرف (۴ تا ۶ لیتر در دقیقه) مصرف شیرآلات را ۳۰ تا ۵۰ درصد کاهش "
+                        "می‌دهند بدون آن‌که افت فشار محسوس باشد. بهترین بازگشت سرمایه در میان "
+                        "اقدامات بهینه‌مصرف؛ بازگشت سرمایه کمتر از ۶ ماه.",
                 region="",
                 expected_savings_pct=8.0,
                 cases_count=27,
             ),
             KnowledgeBaseEntry(
-                title="Continuous-flow leakage in irrigation systems",
-                category="leakage",
-                content="Stuck solenoid valves and split drip lines cause invisible continuous flow. "
-                        "Acoustic and flow-baseline detection identify them quickly. ~22% mean savings "
-                        "post-fix in observed cases.",
-                region="Blue City",
+                title="نشت پیوسته در سامانه‌های آبیاری",
+                category="نشت",
+                content="گیرکردن شیرهای برقی و پارگی خطوط قطره‌ای موجب جریان پیوستهٔ نامرئی می‌شود. "
+                        "تشخیص صوتی و پایش جریان مبنا این موارد را به‌سرعت شناسایی می‌کند. "
+                        "میانگین صرفه‌جویی پس از اصلاح حدود ۲۲ درصد بوده است.",
+                region="شهر آبی",
                 expected_savings_pct=22.0,
                 cases_count=9,
             ),
             KnowledgeBaseEntry(
-                title="Greywater recycling for households with gardens",
-                category="recycling",
-                content="Greywater systems recycle shower & sink water for toilet flushing and "
-                        "irrigation, cutting potable use 25-35% in suitable households.",
+                title="بازچرخانی آب خاکستری برای منازل دارای باغچه",
+                category="بازچرخانی",
+                content="سامانه‌های آب خاکستری، آب دوش و سینک را برای استفاده در فلاش توالت و "
+                        "آبیاری بازچرخانی می‌کنند و مصرف آب آشامیدنی را در منازل مناسب ۲۵ تا ۳۵ درصد کاهش می‌دهند.",
                 region="",
                 expected_savings_pct=28.0,
                 cases_count=4,
@@ -360,17 +361,17 @@ def seed():
         # ---- Training programs ----
         programs = [
             TrainingProgram(
-                institution="Blue City Polytechnic",
-                name="Certified Water Efficiency Auditor",
+                institution="پلی‌تکنیک شهر آبی",
+                name="ممیز رسمی بهینه‌مصرف آب",
                 duration_weeks=6,
-                description="Field auditing, leak detection, hydraulic basics, customer-facing reporting.",
+                description="بازرسی میدانی، نشت‌یابی، مبانی هیدرولیک و گزارش‌نویسی برای مشترکان.",
                 certified_count=42,
             ),
             TrainingProgram(
-                institution="Regional Hydro Institute",
-                name="Smart Irrigation Specialist",
+                institution="مؤسسهٔ منطقه‌ای آب",
+                name="متخصص آبیاری هوشمند",
                 duration_weeks=4,
-                description="Smart controllers, ET₀, soil moisture sensors, hydrozoning.",
+                description="کنترلرهای هوشمند، تبخیر مرجع، حسگرهای رطوبت خاک و منطقه‌بندی آبیاری.",
                 certified_count=18,
             ),
         ]
@@ -378,15 +379,15 @@ def seed():
             db.add(tp)
 
         db.commit()
-        print("Seed complete.")
-        print("  Logins (password = 'password'):")
-        print("    admin@abdit.io                (Abdit operator)")
-        print("    ops@bluecity-water.com        (Water company)")
-        print("    amal@example.com              (Subscriber w/ open proposal)")
-        print("    nadia@example.com             (Subscriber w/ verified install)")
-        print("    samir@example.com             (Subscriber w/ open notification)")
-        print("    specialist1@abdit.io          (Specialist)")
-        print("    aquasmart@abdit.io            (Provider)")
+        print("ایجاد دادهٔ نمایشی به پایان رسید.")
+        print("  حساب‌های نمایشی (رمز عبور = 'password'):")
+        print("    admin@abdit.io                (اپراتور آبدیت)")
+        print("    ops@bluecity-water.com        (شرکت آب)")
+        print("    amal@example.com              (مشترک با پیش‌فاکتور باز)")
+        print("    nadia@example.com             (مشترک با نصب تأییدشده)")
+        print("    samir@example.com             (مشترک با اعلان جدید)")
+        print("    specialist1@abdit.io          (متخصص)")
+        print("    aquasmart@abdit.io            (تأمین‌کننده)")
     finally:
         db.close()
 
