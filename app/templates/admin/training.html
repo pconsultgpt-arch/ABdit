@@ -1,18 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Training{% endblock %}
+{% block title %}آموزش{% endblock %}
 {% block sidebar %}{% set active='training' %}{% include "admin/_sidebar.html" with context %}{% endblock %}
 {% block content %}
-<h3>Training programs & specialists</h3>
+<h3>برنامه‌های آموزشی و متخصصان</h3>
 
 <div class="row g-3">
   <div class="col-md-7">
     <div class="card">
-      <div class="card-header">Partner programs</div>
+      <div class="card-header">برنامه‌های مؤسسات همکار</div>
       <ul class="list-group list-group-flush">
         {% for p in programs %}
         <li class="list-group-item">
           <div class="fw-semibold">{{ p.name }}</div>
-          <div class="small text-muted">{{ p.institution }} · {{ p.duration_weeks }} weeks · {{ p.certified_count }} certified</div>
+          <div class="small text-muted">{{ p.institution }} · {{ p.duration_weeks }} هفته · {{ p.certified_count }} نفر دارای گواهی</div>
           <div class="small">{{ p.description }}</div>
         </li>
         {% endfor %}
@@ -21,11 +21,11 @@
   </div>
   <div class="col-md-5">
     <div class="card">
-      <div class="card-header">Active specialists</div>
+      <div class="card-header">متخصصان فعال</div>
       <ul class="list-group list-group-flush">
         {% for s in specialists %}
         <li class="list-group-item small">
-          <strong>{{ s.user.full_name }}</strong> · {{ s.certification_level }} · ⭐ {{ s.rating }} · {{ s.completed_jobs }} jobs
+          <strong>{{ s.user.full_name }}</strong> · {{ s.certification_level }} · ⭐ {{ s.rating }} · {{ s.completed_jobs }} پروژه
         </li>
         {% endfor %}
       </ul>

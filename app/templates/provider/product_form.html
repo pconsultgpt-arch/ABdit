@@ -1,30 +1,30 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Edit product' if p else 'New product' }}{% endblock %}
+{% block title %}{{ 'ویرایش محصول' if p else 'محصول جدید' }}{% endblock %}
 {% block sidebar %}{% include "provider/_sidebar.html" with context %}{% endblock %}
 {% block content %}
-<h3>{{ 'Edit product' if p else 'New product' }}</h3>
+<h3>{{ 'ویرایش محصول' if p else 'محصول جدید' }}</h3>
 <form method="post" action="{{ '/provider/products/' ~ p.id if p else '/provider/products/new' }}" class="card card-body" style="max-width: 720px;">
   <div class="row g-2">
-    <div class="col-md-8"><label class="form-label small">Name</label>
+    <div class="col-md-8"><label class="form-label small">نام</label>
       <input class="form-control form-control-sm" name="name" value="{{ p.name if p else '' }}" required></div>
-    <div class="col-md-4"><label class="form-label small">Category</label>
+    <div class="col-md-4"><label class="form-label small">دسته</label>
       <select class="form-select form-select-sm" name="category">
-        {% for c in categories %}<option value="{{ c }}" {% if p and p.category==c %}selected{% endif %}>{{ c.replace('_',' ') }}</option>{% endfor %}
+        {% for c in categories %}<option value="{{ c }}" {% if p and p.category==c %}selected{% endif %}>{{ t_category[c] }}</option>{% endfor %}
       </select></div>
-    <div class="col-12"><label class="form-label small">Description</label>
+    <div class="col-12"><label class="form-label small">توضیحات</label>
       <textarea class="form-control form-control-sm" name="description" rows="2">{{ p.description if p else '' }}</textarea></div>
-    <div class="col-md-3"><label class="form-label small">Price</label>
+    <div class="col-md-3"><label class="form-label small">قیمت</label>
       <input class="form-control form-control-sm" name="price" type="number" step="0.01" value="{{ p.price if p else '' }}" required></div>
-    <div class="col-md-3"><label class="form-label small">Install fee</label>
+    <div class="col-md-3"><label class="form-label small">هزینهٔ نصب</label>
       <input class="form-control form-control-sm" name="install_fee" type="number" step="0.01" value="{{ p.install_fee if p else 0 }}"></div>
-    <div class="col-md-3"><label class="form-label small">Expected savings %</label>
+    <div class="col-md-3"><label class="form-label small">صرفه‌جویی برآوردی ٪</label>
       <input class="form-control form-control-sm" name="expected_savings_pct" type="number" step="0.1" value="{{ p.expected_savings_pct if p else 0 }}"></div>
     {% if p %}
     <div class="col-md-3"><label class="form-label small">&nbsp;</label>
-      <div class="form-check mt-1"><input class="form-check-input" type="checkbox" name="active" {% if p.active %}checked{% endif %}><label class="form-check-label small">Active</label></div></div>
+      <div class="form-check mt-1"><input class="form-check-input" type="checkbox" name="active" {% if p.active %}checked{% endif %}><label class="form-check-label small">فعال</label></div></div>
     {% endif %}
   </div>
-  <div class="mt-3"><button class="btn btn-primary btn-sm">{{ 'Save changes' if p else 'Create product' }}</button>
-    <a class="btn btn-outline-secondary btn-sm" href="/provider">Cancel</a></div>
+  <div class="mt-3"><button class="btn btn-primary btn-sm">{{ 'ذخیرهٔ تغییرات' if p else 'ایجاد محصول' }}</button>
+    <a class="btn btn-outline-secondary btn-sm" href="/provider">انصراف</a></div>
 </form>
 {% endblock %}

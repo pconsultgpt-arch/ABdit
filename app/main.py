@@ -1,10 +1,8 @@
-from datetime import datetime
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -12,17 +10,15 @@ from .auth import current_user, verify_password
 from .database import Base, engine, get_db
 from .models import Role, User
 from .routers import admin, provider, specialist, subscriber, water_company
+from .templating import templates
 
 BASE_DIR = Path(__file__).resolve().parent
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Abdit – Intelligent Water Conservation Platform")
+app = FastAPI(title="آبدیت – سامانهٔ هوشمند بهینه‌سازی مصرف آب")
 app.add_middleware(SessionMiddleware, secret_key="abdit-demo-secret-change-me")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
-
-templates = Jinja2Templates(directory=BASE_DIR / "templates")
-templates.env.globals["now"] = datetime.utcnow
 
 
 def role_home(role: str) -> str:
@@ -33,12 +29,6 @@ def role_home(role: str) -> str:
         Role.PROVIDER.value: "/provider",
         Role.ADMIN.value: "/admin",
     }.get(role, "/")
-
-
-@app.middleware("http")
-async def inject_user(request: Request, call_next):
-    response = await call_next(request)
-    return response
 
 
 def render(request: Request, template: str, db: Session, **ctx):
@@ -67,7 +57,7 @@ def login_submit(request: Request, email: str = Form(...), password: str = Form(
                  db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email.lower().strip()).first()
     if not user or not verify_password(password, user.password_hash):
-        return RedirectResponse("/login?error=Invalid+credentials", status_code=303)
+        return RedirectResponse("/login?error=نام+کاربری+یا+رمز+عبور+اشتباه+است", status_code=303)
     request.session["user_id"] = user.id
     return RedirectResponse(role_home(user.role), status_code=303)
 

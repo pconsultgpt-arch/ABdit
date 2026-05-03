@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Notifications{% endblock %}
+{% block title %}اعلان‌ها{% endblock %}
 {% block sidebar %}{% set active='notifications' %}{% include "subscriber/_sidebar.html" with context %}{% endblock %}
 {% block content %}
-<h3>Notifications</h3>
+<h3>اعلان‌ها</h3>
 <div class="list-group">
   {% for n in items %}
     <div class="list-group-item {% if not n.read %}list-group-item-light{% endif %}">
       <div class="d-flex justify-content-between">
         <div>
-          <div class="fw-semibold">{{ n.title }} {% if not n.read %}<span class="badge bg-primary">new</span>{% endif %}</div>
+          <div class="fw-semibold">{{ n.title }} {% if not n.read %}<span class="badge bg-primary">جدید</span>{% endif %}</div>
           <p class="mb-2 small">{{ n.body }}</p>
           <div class="text-muted small">{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
         </div>
@@ -16,20 +16,20 @@
           {% if n.anomaly_id %}
           <form method="post" action="/subscriber/inspections/request">
             <input type="hidden" name="anomaly_id" value="{{ n.anomaly_id }}">
-            <input type="hidden" name="notes" value="Triggered by alert: {{ n.title }}">
-            <button class="btn btn-sm btn-primary" type="submit">Request inspection</button>
+            <input type="hidden" name="notes" value="ناشی از هشدار: {{ n.title }}">
+            <button class="btn btn-sm btn-primary" type="submit">درخواست بازرسی</button>
           </form>
           {% endif %}
           {% if not n.read %}
           <form method="post" action="/subscriber/notifications/{{ n.id }}/read">
-            <button class="btn btn-sm btn-outline-secondary" type="submit">Mark read</button>
+            <button class="btn btn-sm btn-outline-secondary" type="submit">علامت‌گذاری به‌عنوان خوانده‌شده</button>
           </form>
           {% endif %}
         </div>
       </div>
     </div>
   {% else %}
-    <div class="list-group-item text-muted">No notifications.</div>
+    <div class="list-group-item text-muted">اعلانی موجود نیست.</div>
   {% endfor %}
 </div>
 {% endblock %}

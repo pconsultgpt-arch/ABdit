@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Water company{% endblock %}
+{% block title %}شرکت آب{% endblock %}
 {% block sidebar %}{% set active='dashboard' %}{% include "water_company/_sidebar.html" with context %}{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -8,19 +8,19 @@
     <div class="text-muted small">{{ wc.region }}</div>
   </div>
   <form method="post" action="/water-company/run-analytics">
-    <button class="btn btn-sm btn-primary">Re-run analytics</button>
+    <button class="btn btn-sm btn-primary">اجرای دوبارهٔ تحلیل</button>
   </form>
 </div>
 
 <div class="row g-3 mb-3">
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Subscribers</div><div class="value">{{ subscribers|length }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Total billed (m³)</div><div class="value">{{ '%.0f'|format(total_m3) }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Revenue</div><div class="value">{{ '%.0f'|format(total_amount) }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Open anomalies</div><div class="value">{{ anomalies|selectattr('resolved','equalto',false)|list|length }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">تعداد مشترکان</div><div class="value">{{ subscribers|length }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">جمع مصرف (مترمکعب)</div><div class="value">{{ '%.0f'|format(total_m3) }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">درآمد</div><div class="value">{{ '%.0f'|format(total_amount) }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">ناهنجاری‌های باز</div><div class="value">{{ anomalies|selectattr('resolved','equalto',false)|list|length }}</div></div></div>
 </div>
 
 <div class="card mb-3">
-  <div class="card-header">Aggregate consumption (last 12 months)</div>
+  <div class="card-header">مصرف کل (۱۲ ماه گذشته)</div>
   <div class="card-body">
     <div class="bar-chart">
       {% for k, v in monthly %}
@@ -37,32 +37,32 @@
 <div class="row g-3">
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">Anomalies</div>
+      <div class="card-header">ناهنجاری‌ها</div>
       <div class="list-group list-group-flush" style="max-height: 320px; overflow-y: auto;">
         {% for a in anomalies %}
         <div class="list-group-item">
           <div class="d-flex justify-content-between">
             <div>
-              <span class="badge severity-{{ a.severity }}">{{ a.severity }}</span>
+              <span class="badge severity-{{ a.severity }}">{{ t_severity[a.severity] }}</span>
               <strong>{{ a.subscriber.user.full_name }}</strong>
               <div class="small text-muted">{{ a.description }}</div>
             </div>
           </div>
         </div>
-        {% else %}<div class="list-group-item text-muted">No anomalies.</div>{% endfor %}
+        {% else %}<div class="list-group-item text-muted">ناهنجاری‌ای یافت نشد.</div>{% endfor %}
       </div>
     </div>
   </div>
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">Inspection pipeline</div>
+      <div class="card-header">روند بازرسی‌ها</div>
       <table class="table table-sm mb-0">
-        <thead><tr><th>#</th><th>Subscriber</th><th>Status</th></tr></thead>
+        <thead><tr><th>#</th><th>مشترک</th><th>وضعیت</th></tr></thead>
         <tbody>
           {% for i in inspections %}
           <tr><td>{{ i.id }}</td><td>{{ i.subscriber.user.full_name }}</td>
-            <td><span class="badge bg-secondary">{{ i.status.replace('_',' ') }}</span></td></tr>
-          {% else %}<tr><td colspan="3" class="text-muted">No inspections yet.</td></tr>{% endfor %}
+            <td><span class="badge bg-secondary">{{ t_status[i.status] }}</span></td></tr>
+          {% else %}<tr><td colspan="3" class="text-muted">هنوز بازرسی‌ای ثبت نشده است.</td></tr>{% endfor %}
         </tbody>
       </table>
     </div>

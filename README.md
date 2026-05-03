@@ -1,8 +1,7 @@
 # ABdit
 
-This repository contains the `AbDit.pptx` presentation, which shows a schematic
-view of a system designed to convince people to use and install devices that
-help reduce water consumption and cost — and a working **prototype web
+This repository contains the `AbDit.pptx` schematic, a professional Persian
+pitch deck (`AbDit-Presentation.pptx`), and a working **prototype web
 application** that implements the Abdit platform end-to-end.
 
 ## Prototype
@@ -98,6 +97,39 @@ app/
 ├── templates/         # Jinja2 templates per role
 └── static/style.css
 ```
+
+### Persian pitch deck
+
+`AbDit-Presentation.pptx` is a professional 18-slide Persian deck (RTL,
+Vazirmatn/Tahoma font, navy/teal theme matching the prototype) covering:
+
+1. عنوان — معرفی آبدیت
+2. چالش بحران آب
+3. مدل سنتی و محدودیت‌هایش
+4. معرفی آبدیت — چهار ستون اصلی
+5. ارزش پیشنهادی برای هر ذی‌نفع
+6. روند کار هفت‌گامی — نمای کلی
+7. گام‌های ۱–۳: داده، تحلیل، اعلان
+8. گام‌های ۴–۷: بازرسی تا یادگیری
+9. ذی‌نفعان (دیاگرام شعاعی)
+10. اجزای فنی سامانه
+11. بازارگاه تجهیزات
+12. حلقهٔ یادگیری مداوم
+13. داشبوردهای نمونه (مشترک + اپراتور)
+14. نتایج مورد انتظار با ارقام
+15. مدل کسب‌وکار
+16. نقشهٔ راه آینده
+17. چرا آبدیت برنده می‌شود
+18. دعوت به همکاری
+
+To regenerate (e.g. after editing slide content in `tools/generate_presentation.py`):
+
+```bash
+pip install -r requirements-dev.txt
+python -m tools.generate_presentation
+```
+
+The `.pptx` is fully editable in PowerPoint, Keynote, or Google Slides.
 
 ### Limitations (this is a prototype)
 

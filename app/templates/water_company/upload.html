@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Upload reading{% endblock %}
+{% block title %}ثبت قرائت{% endblock %}
 {% block sidebar %}{% set active='upload' %}{% include "water_company/_sidebar.html" with context %}{% endblock %}
 {% block content %}
-<h3>Upload meter reading</h3>
-<p class="text-muted small">In production this would be a bulk import feed from the utility's metering systems. This form simulates a single reading for the current month and creates the corresponding bill.</p>
+<h3>ثبت قرائت کنتور</h3>
+<p class="text-muted small">در محیط واقعی این داده‌ها از سامانه‌های کنتورخوانی شرکت آب به‌صورت دسته‌ای دریافت می‌شوند. این فرم یک قرائت برای دورهٔ جاری شبیه‌سازی می‌کند و صورت‌حساب آن را تولید می‌کند.</p>
 
 <form method="post" action="/water-company/upload" class="card card-body" style="max-width: 540px;">
-  <label class="form-label small">Subscriber</label>
+  <label class="form-label small">مشترک</label>
   <select name="subscriber_id" class="form-select form-select-sm mb-2">
     {% for s in subs %}
       <option value="{{ s.id }}">{{ s.account_number }} · {{ s.user.full_name }}</option>
     {% endfor %}
   </select>
-  <label class="form-label small">Cubic meters this period</label>
+  <label class="form-label small">مصرف این دوره (مترمکعب)</label>
   <input name="cubic_meters" type="number" step="0.1" class="form-control form-control-sm mb-3" required>
-  <button class="btn btn-primary btn-sm">Save reading & generate bill</button>
+  <button class="btn btn-primary btn-sm">ذخیرهٔ قرائت و صدور صورت‌حساب</button>
 </form>
 {% endblock %}

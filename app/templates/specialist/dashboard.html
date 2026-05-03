@@ -1,38 +1,38 @@
 {% extends "base.html" %}
-{% block title %}Specialist dashboard{% endblock %}
+{% block title %}داشبورد متخصص{% endblock %}
 {% block sidebar %}{% set active='dashboard' %}{% include "specialist/_sidebar.html" with context %}{% endblock %}
 {% block content %}
 <h3>{{ user.full_name }}</h3>
-<p class="text-muted small">{{ sp.certification_level }} · ⭐ {{ sp.rating }} · {{ sp.completed_jobs }} jobs · {{ sp.region }}</p>
+<p class="text-muted small">{{ sp.certification_level }} · ⭐ {{ sp.rating }} · {{ sp.completed_jobs }} پروژه · {{ sp.region }}</p>
 
 <div class="row g-3 mb-3">
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Open requests</div><div class="value">{{ open_requests|length }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Active jobs</div><div class="value">{{ my_active|length }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Completed</div><div class="value">{{ history|length }}</div></div></div>
-  <div class="col-md-3"><div class="kpi-card"><div class="label">Lifetime</div><div class="value">{{ sp.completed_jobs }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">درخواست‌های باز</div><div class="value">{{ open_requests|length }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">پروژه‌های فعال</div><div class="value">{{ my_active|length }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">انجام‌شده</div><div class="value">{{ history|length }}</div></div></div>
+  <div class="col-md-3"><div class="kpi-card"><div class="label">مجموع کل</div><div class="value">{{ sp.completed_jobs }}</div></div></div>
 </div>
 
 <div class="row g-3">
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">Unassigned inspection requests</div>
+      <div class="card-header">درخواست‌های بازرسی بدون متخصص</div>
       <div class="list-group list-group-flush">
         {% for i in open_requests %}
         <div class="list-group-item d-flex justify-content-between">
           <div>
             <div class="fw-semibold">#{{ i.id }} · {{ i.subscriber.user.full_name }}</div>
-            <div class="small text-muted">{{ i.subscriber.address }}, {{ i.subscriber.city }} · household {{ i.subscriber.household_size }}{% if i.subscriber.has_garden %} · garden{% endif %}{% if i.subscriber.has_pool %} · pool{% endif %}</div>
+            <div class="small text-muted">{{ i.subscriber.address }}، {{ i.subscriber.city }} · خانوار {{ i.subscriber.household_size }} نفره{% if i.subscriber.has_garden %} · دارای باغچه{% endif %}{% if i.subscriber.has_pool %} · دارای استخر{% endif %}</div>
             <div class="small">{{ i.notes }}</div>
           </div>
-          <form method="post" action="/specialist/inspections/{{ i.id }}/claim"><button class="btn btn-sm btn-primary">Claim</button></form>
+          <form method="post" action="/specialist/inspections/{{ i.id }}/claim"><button class="btn btn-sm btn-primary">پذیرش</button></form>
         </div>
-        {% else %}<div class="list-group-item text-muted">No unassigned requests right now.</div>{% endfor %}
+        {% else %}<div class="list-group-item text-muted">در حال حاضر درخواستی بدون متخصص وجود ندارد.</div>{% endfor %}
       </div>
     </div>
   </div>
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">My active jobs</div>
+      <div class="card-header">پروژه‌های فعال من</div>
       <div class="list-group list-group-flush">
         {% for i in my_active %}
         <a class="list-group-item list-group-item-action" href="/specialist/inspections/{{ i.id }}">
@@ -41,20 +41,20 @@
               <div class="fw-semibold">#{{ i.id }} · {{ i.subscriber.user.full_name }}</div>
               <div class="small text-muted">{{ i.subscriber.address }}</div>
             </div>
-            <span class="badge bg-secondary align-self-center">{{ i.status.replace('_',' ') }}</span>
+            <span class="badge bg-secondary align-self-center">{{ t_status[i.status] }}</span>
           </div>
         </a>
-        {% else %}<div class="list-group-item text-muted">No active jobs.</div>{% endfor %}
+        {% else %}<div class="list-group-item text-muted">پروژهٔ فعالی ندارید.</div>{% endfor %}
       </div>
     </div>
     <div class="card mt-3">
-      <div class="card-header">History</div>
+      <div class="card-header">سوابق</div>
       <div class="list-group list-group-flush">
         {% for i in history %}
         <a class="list-group-item list-group-item-action small" href="/specialist/inspections/{{ i.id }}">
-          #{{ i.id }} · {{ i.subscriber.user.full_name }} · {{ i.status }}
+          #{{ i.id }} · {{ i.subscriber.user.full_name }} · {{ t_status[i.status] }}
         </a>
-        {% else %}<div class="list-group-item text-muted">No completed jobs yet.</div>{% endfor %}
+        {% else %}<div class="list-group-item text-muted">هنوز پروژهٔ تکمیل‌شده‌ای ندارید.</div>{% endfor %}
       </div>
     </div>
   </div>
